@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails | Millions of Pink Lines]]></title>
   <link href="http://damirsvrtan.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://damirsvrtan.github.io/"/>
-  <updated>2014-11-30T14:57:28+01:00</updated>
+  <updated>2014-11-30T15:07:15+01:00</updated>
   <id>http://damirsvrtan.github.io/</id>
   <author>
     <name><![CDATA[Damir Svrtan]]></name>
@@ -72,7 +72,7 @@ bundle install
 bundle exec rake db:setup
 FILE
 
-File.open('bin/setup', 'w'){|file| file.write(bin_setup_file)}
+create_file 'bin/setup', bin_setup_file
 </code></pre>
 
 <p>Swap the rdoc README format with markdown:</p>
@@ -120,9 +120,7 @@ production:
   database: &lt;%= @app_name %&gt;_production
 FILE
 
-File.open('config/database.yml', 'w') do |file|
-  file.write(ERB.new(database_file).result(binding))
-end
+create_file 'config/database.yml', ERB.new(database_file).result(binding), force: true
 </code></pre>
 
 <p>Remove unwanted gems (I never use sqlite nor coffescript). Spring will be added later in the development group of gems.
@@ -149,8 +147,6 @@ I use <a href="http://slim-lang.com/">slim</a> as a templating engine, so I repl
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">layout_file</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&lt;-</span><span class="no">FILE</span>
 </span><span class='line'><span class="n">doctype</span> <span class="n">html</span>
 </span><span class='line'><span class="n">html</span>
@@ -166,10 +162,8 @@ I use <a href="http://slim-lang.com/">slim</a> as a templating engine, so I repl
 </span><span class='line'>    <span class="o">=</span> <span class="k">yield</span>
 </span><span class='line'><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;File.delete(&amp;lsquo;app/</span><span class="n">views</span><span class="o">/</span><span class="n">layouts</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">erb</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span>
-</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">layouts</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">slim</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">w</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="no">ERB</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">layout_file</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="nb">binding</span><span class="p">))</span>
-</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="sr">&lt;p&gt;remove_file &amp;lsquo;app/</span><span class="n">views</span><span class="o">/</span><span class="n">layouts</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">erb</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span>
+</span><span class='line'><span class="n">create_file</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">layouts</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">slim</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;,</span> <span class="no">ERB</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">layout_file</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="nb">binding</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure></p>
 
 <p>Remove comments and double newlines from the Gemfile:

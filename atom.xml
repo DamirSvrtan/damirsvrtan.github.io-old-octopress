@@ -4,7 +4,7 @@
   <title><![CDATA[Millions of Pink Lines]]></title>
   <link href="http://damirsvrtan.github.io/atom.xml" rel="self"/>
   <link href="http://damirsvrtan.github.io/"/>
-  <updated>2014-11-30T14:57:28+01:00</updated>
+  <updated>2014-11-30T15:07:15+01:00</updated>
   <id>http://damirsvrtan.github.io/</id>
   <author>
     <name><![CDATA[Damir Svrtan]]></name>
@@ -83,7 +83,7 @@
 </span><span class='line'><span class="sh">bundle exec rake db:setup</span>
 </span><span class='line'><span class="no">FILE</span>
 </span><span class='line'>
-</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;bin/setup&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">){</span><span class="o">|</span><span class="n">file</span><span class="o">|</span> <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">bin_setup_file</span><span class="p">)}</span>
+</span><span class='line'><span class="n">create_file</span> <span class="s1">&#39;bin/setup&#39;</span><span class="p">,</span> <span class="n">bin_setup_file</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -138,8 +138,6 @@
 <span class='line-number'>31</span>
 <span class='line-number'>32</span>
 <span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">database_type</span> <span class="o">=</span> <span class="n">ask</span><span class="p">(</span><span class="s2">&quot;Do you want to use postgres or mysql?&quot;</span><span class="p">,</span> <span class="ss">limited_to</span><span class="p">:</span> <span class="o">[</span><span class="s2">&quot;pg&quot;</span><span class="p">,</span> <span class="s2">&quot;mysql&quot;</span><span class="o">]</span><span class="p">)</span>
 </span><span class='line'>
 </span><span class='line'><span class="n">adapter</span> <span class="o">=</span> <span class="k">if</span> <span class="n">database_type</span> <span class="o">==</span> <span class="s1">&#39;pg&#39;</span>
@@ -172,9 +170,7 @@
 </span><span class='line'><span class="sh">  database: &lt;%= @app_name %&gt;_production</span>
 </span><span class='line'><span class="no">FILE</span>
 </span><span class='line'>
-</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;config/database.yml&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="no">ERB</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">database_file</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="nb">binding</span><span class="p">))</span>
-</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">create_file</span> <span class="s1">&#39;config/database.yml&#39;</span><span class="p">,</span> <span class="no">ERB</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">database_file</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="nb">binding</span><span class="p">),</span> <span class="ss">force</span><span class="p">:</span> <span class="kp">true</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -207,8 +203,6 @@
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">layout_file</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="no">FILE</span>
 </span><span class='line'><span class="sh">doctype html</span>
 </span><span class='line'><span class="sh">html</span>
@@ -223,10 +217,8 @@
 </span><span class='line'><span class="sh">    = yield</span>
 </span><span class='line'><span class="no">FILE</span>
 </span><span class='line'>
-</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;app/views/layouts/application.html.erb&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;app/views/layouts/application.html.slim&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
-</span><span class='line'>  <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="no">ERB</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">layout_file</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="nb">binding</span><span class="p">))</span>
-</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">remove_file</span> <span class="s1">&#39;app/views/layouts/application.html.erb&#39;</span>
+</span><span class='line'><span class="n">create_file</span> <span class="s1">&#39;app/views/layouts/application.html.slim&#39;</span><span class="p">,</span> <span class="no">ERB</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">layout_file</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="nb">binding</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
