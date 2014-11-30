@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Millions of Pink Lines]]></title>
   <link href="http://damirsvrtan.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://damirsvrtan.github.io/"/>
-  <updated>2014-11-30T15:15:04+01:00</updated>
+  <updated>2014-11-30T15:42:29+01:00</updated>
   <id>http://damirsvrtan.github.io/</id>
   <author>
     <name><![CDATA[Damir Svrtan]]></name>
@@ -55,7 +55,7 @@
 
 <p>Once the basic application generating is done, the generator will start executing the given template. Besides writting plain Ruby, you can use <a href="https://github.com/erikhuda/thor/wiki/Getting-Started">Thor</a> methods (Rails generators also use Thor) to write more readable and expressive code. Methods such as <code>ask?</code>, <code>add_file</code>, <code>copy_file</code>, and <code>run</code> come in quite handy with scripts like these.</p>
 
-<p>Since i don&rsquo;t need as much stuff as most agencies to get started, a <a href="https://gist.github.com/DamirSvrtan/28a28e50d639b9445bbc">simple script with merely 100 lines of code</a> is totally sufficient for me.</p>
+<p>Since i don&rsquo;t need as much stuff as most agencies to get started, a <a href="https://gist.github.com/DamirSvrtan/28a28e50d639b9445bbc">simple script with merely 100 lines of code hosted on gist.github.io</a> is totally sufficient for me.</p>
 
 <p>I create my projects with this command (&lsquo;-m&rsquo; is short for &lsquo;&ndash;template&rsquo; ):</p>
 
