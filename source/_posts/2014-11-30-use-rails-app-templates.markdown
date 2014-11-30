@@ -44,7 +44,7 @@ The Rails application generator can accept an '--template' option which can be a
 
 Once the basic application generating is done, the generator will start executing the given template. Besides writting plain Ruby, you can use [Thor](https://github.com/erikhuda/thor/wiki/Getting-Started) methods (Rails generators also use Thor) to write more readable and expressive code. Methods such as `ask?`, `add_file`, `copy_file`, and `run` come in quite handy with scripts like these.
 
-Since i don't need as much stuff as most agencies to get started, a [simple script with merely 100 lines of code](https://gist.github.com/DamirSvrtan/28a28e50d639b9445bbc) is totally sufficient for me.
+Since i don't need as much stuff as most agencies to get started, a [simple script with merely 100 lines of code hosted on gist.github.io](https://gist.github.com/DamirSvrtan/28a28e50d639b9445bbc) is totally sufficient for me.
 
 I create my projects with this command ('-m' is short for '--template' ):
 
