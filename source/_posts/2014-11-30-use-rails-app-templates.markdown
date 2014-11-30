@@ -63,7 +63,7 @@ bundle install
 bundle exec rake db:setup
 FILE
 
-File.open('bin/setup', 'w'){|file| file.write(bin_setup_file)}
+create_file 'bin/setup', bin_setup_file
 ```
 
 Swap the rdoc README format with markdown:
@@ -114,9 +114,7 @@ production:
   database: <%= @app_name %>_production
 FILE
 
-File.open('config/database.yml', 'w') do |file|
-  file.write(ERB.new(database_file).result(binding))
-end
+create_file 'config/database.yml', ERB.new(database_file).result(binding), force: true
 ```
 
 
@@ -142,10 +140,8 @@ html
     = yield
 FILE
 
-File.delete('app/views/layouts/application.html.erb')
-File.open('app/views/layouts/application.html.slim', 'w') do |file|
-  file.write(ERB.new(layout_file).result(binding))
-end
+remove_file 'app/views/layouts/application.html.erb'
+create_file 'app/views/layouts/application.html.slim', ERB.new(layout_file).result(binding)
 ```
 
 
