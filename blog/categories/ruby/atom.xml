@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | Millions of Pink Lines]]></title>
   <link href="http://damirsvrtan.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://damirsvrtan.github.io/"/>
-  <updated>2014-11-30T15:42:29+01:00</updated>
+  <updated>2014-11-30T15:48:37+01:00</updated>
   <id>http://damirsvrtan.github.io/</id>
   <author>
     <name><![CDATA[Damir Svrtan]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Start Using Rails Application Templates]]></title>
-    <link href="http://damirsvrtan.github.io/blog/2014/11/26/use-rails-app-templates/"/>
+    <title type="html"><![CDATA[Automate Generating New Rails Applications]]></title>
+    <link href="http://damirsvrtan.github.io/blog/2014/11/26/automate-generating-new-rails-applications/"/>
     <updated>2014-11-26T19:57:04+01:00</updated>
-    <id>http://damirsvrtan.github.io/blog/2014/11/26/use-rails-app-templates</id>
+    <id>http://damirsvrtan.github.io/blog/2014/11/26/automate-generating-new-rails-applications</id>
     <content type="html"><![CDATA[<p>In the last year and a half since I&rsquo;ve started working at <a href="https://infinum.co">Infinum</a>, a software development agency based in Croatia, I&rsquo;ve found my self quite often in situations where I have to create a Rails application from scratch. Those situations come accross when I have to do a new application for work, for a hackathon or just for plain fun (when I want to try out a new gem or a new release of Rails, Ruby and similar).</p>
 
 <p>I&rsquo;ve become comfortable with a set of gems and a Rails setup that I use everyday, and it&rsquo;s quite an annoiance to do a fresh setup when I generate new apps.</p>
