@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Rails | Millions of Pink Lines]]></title>
+  <link href="http://damirsvrtan.github.io/blog/categories/rails/atom.xml" rel="self"/>
+  <link href="http://damirsvrtan.github.io/"/>
+  <updated>2014-11-30T14:57:28+01:00</updated>
+  <id>http://damirsvrtan.github.io/</id>
+  <author>
+    <name><![CDATA[Damir Svrtan]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Start Using Rails Application Templates]]></title>
+    <link href="http://damirsvrtan.github.io/blog/2014/11/26/use-rails-app-templates/"/>
+    <updated>2014-11-26T19:57:04+01:00</updated>
+    <id>http://damirsvrtan.github.io/blog/2014/11/26/use-rails-app-templates</id>
+    <content type="html"><![CDATA[<p>In the last year and a half since I&rsquo;ve started working at <a href="https://infinum.co">Infinum</a>, a software development agency based in Croatia, I&rsquo;ve found my self quite often in situations where I have to create a Rails application from scratch. Those situations come accross when I have to do a new application for work, for a hackathon or just for plain fun (when I want to try out a new gem or a new release of Rails, Ruby and similar).</p>
+
+<p>I&rsquo;ve become comfortable with a set of gems and a Rails setup that I use everyday, and it&rsquo;s quite an annoiance to do a fresh setup when I generate new apps.</p>
+
+<p>There are a few ways to approach this problem:</p>
+
+<!--
+  1. clone an already bootstrapped Rails application
+  2. create a gem for generating new applications
+  3. create a Rails application template file -->
+
+
+<h2>Clone an already bootstrapped Rails application</h2>
+
+<p>I&rsquo;ve seen multiple software agencies do this, one of the latest being <a href="http://www.flatstack.com/">Flatstack</a> with their <a href="https://github.com/fs/rails-base">rails-base</a> repo.</p>
+
+<p>This is probably the easist way to have an already bootstrapped application, but it has it&rsquo;s downsides. The biggest downside is changing the skeleton once a new Rails version is released. With the plans for Rails 5 which <a href="https://twitter.com/dhh">DHH</a> announced on <a href="https://www.youtube.com/watch?v=oQyL5rQrWu0">his talk with the Amsterdam Ruby Group</a>, everybody having a solution like this will probably have to start from scratch.</p>
+
+<p>Besides that, I see the rails-base repo has over 800 commits, and it kinda seems too much work for a base application (even if it&rsquo;s been 4 years since the first commit).</p>
+
+<h2>A gem for generating new applications</h2>
+
+<p>Probably the most popular solution for doing this is the <a href="https://github.com/thoughtbot/suspenders">suspenders</a> gem by <a href="http://thoughtbot.com/">Thoughtbot</a>.</p>
+
+<p>What they basically do is generate a new rails application and hookup after the generating process to do LOTS of setting up. They add their set of gems used on the front-end, setup the database, configure deployment on Heroku, tracking for New Relic and similar.</p>
+
+<p>Suspenders are highly maintained and probably the best solution for agencies doing lots of Rails work. It&rsquo;s got a clean codebase so it&rsquo;s easy to fork it and do neccessary tweaking.</p>
+
+<h2>Use a Rails application template</h2>
+
+<p>The Rails application generator can accept an &lsquo;&ndash;template&rsquo; option which can be a path or an URL to a Ruby script:</p>
+
+<pre><code class="bash">  rails new my_application --template 'path_or_url_to_the_template'
+</code></pre>
+
+<p>Once the basic application generating is done, the generator will start executing the given template. Besides writting plain Ruby, you can use <a href="https://github.com/erikhuda/thor/wiki/Getting-Started">Thor</a> methods (Rails generators also use Thor) to write more readable and expressive code. Methods such as <code>ask?</code>, <code>add_file</code>, <code>copy_file</code>, and <code>run</code> come in quite handy with scripts like these.</p>
+
+<p>Since i don&rsquo;t need as much stuff as most agencies to get started, a <a href="https://gist.github.com/DamirSvrtan/28a28e50d639b9445bbc">simple script with merely 100 lines of code</a> is totally sufficient for me.</p>
+
+<p>I create my projects with this command (&lsquo;-m&rsquo; is short for &lsquo;&ndash;template&rsquo; ):</p>
+
+<pre><code class="bash">rails new _app_name_ -m https://gist.githubusercontent.com/DamirSvrtan/28a28e50d639b9445bbc/raw/app_template.rb
+</code></pre>
+
+<p>Let&rsquo;s go through each part of the template I use:</p>
+
+<p>Create a <a href="http://robots.thoughtbot.com/bin-setup">bin/setup</a> file so new developers can start right away by executing just one command (I&rsquo;ll move this part once Rails 4.2.0 comes out, the bin/setup script will be in <a href="https://github.com/rails/rails/blob/master/railties/lib/rails/generators/rails/app/templates/bin/setup">new Rails projects by default</a>):</p>
+
+<pre><code class="ruby">bin_setup_file = &lt;&lt;-FILE
+#!/bin/sh
+bundle install
+bundle exec rake db:setup
+FILE
+
+File.open('bin/setup', 'w'){|file| file.write(bin_setup_file)}
+</code></pre>
+
+<p>Swap the rdoc README format with markdown:</p>
+
+<pre><code class="ruby">remove_file "README.rdoc"
+create_file "README.md", "Development: run ./bin/setup"
+</code></pre>
+
+<p>Since I always use SASS, I would always have to change the main stylesheet extension (would often wonder why my sassy stylesheets aren&rsquo;t working as expected):</p>
+
+<pre><code class="ruby">run 'mv app/assets/stylesheets/application.css app/assets/stylesheets/application.scss'
+</code></pre>
+
+<p>I either use postgres or mysql (merging soon to postgres exclusivly) so I add the appropriate database driver and change the configuration file. A cool thing with Thor is that you can ask the user questions, which I actually prefer prompting opposed to handing out configuration options before script execution.</p>
+
+<pre><code class="ruby">database_type = ask("Do you want to use postgres or mysql?", limited_to: ["pg", "mysql"])
+
+adapter = if database_type == 'pg'
+  gem 'pg'
+  'postgresql'
+else
+  gem 'mysql2'
+  'mysql2'
+end
+
+database_file = &lt;&lt;-FILE
+default: &amp;default
+  adapter: &lt;%= adapter %&gt;
+  pool: 5
+  timeout: 5000
+  host: localhost
+  username: root
+
+development:
+  &lt;&lt;: *default
+  database: &lt;%= @app_name %&gt;_development
+  password:
+
+test:
+  &lt;&lt;: *default
+  database: &lt;%= @app_name %&gt;_test
+
+production:
+  &lt;&lt;: *default
+  database: &lt;%= @app_name %&gt;_production
+FILE
+
+File.open('config/database.yml', 'w') do |file|
+  file.write(ERB.new(database_file).result(binding))
+end
+</code></pre>
+
+<p>Remove unwanted gems (I never use sqlite nor coffescript). Spring will be added later in the development group of gems.
+<code>ruby
+%w(spring coffee-rails sqlite3).each do |unwanted_gem|
+  gsub_file("Gemfile", /gem '#{unwanted_gem}'.*\n/, '')
+end
+</code>
+I use <a href="http://slim-lang.com/">slim</a> as a templating engine, so I replace the ERB layout:
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">layout_file</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&lt;-</span><span class="no">FILE</span>
+</span><span class='line'><span class="n">doctype</span> <span class="n">html</span>
+</span><span class='line'><span class="n">html</span>
+</span><span class='line'>  <span class="n">head</span>
+</span><span class='line'>    <span class="n">title</span> <span class="o">&lt;</span><span class="sx">%= @app_name.titleize %&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sx">&lt;pre&gt;&lt;code&gt;=</span> <span class="n">stylesheet_link_tag</span>    <span class="s1">&#39;application&#39;</span><span class="p">,</span> <span class="ss">media</span><span class="p">:</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="s1">&#39;data-turbolinks-track&#39;</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="kp">true</span>
+</span><span class='line'><span class="o">=</span> <span class="n">javascript_include_tag</span> <span class="s1">&#39;application&#39;</span><span class="p">,</span> <span class="s1">&#39;data-turbolinks-track&#39;</span> <span class="o">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="kp">true</span>
+</span><span class='line'><span class="o">=</span> <span class="n">csrf_meta_tags</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="n">body</span>
+</span><span class='line'>    <span class="o">=</span> <span class="k">yield</span>
+</span><span class='line'><span class="no">FILE</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;File.delete(&amp;lsquo;app/</span><span class="n">views</span><span class="o">/</span><span class="n">layouts</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">erb</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span>
+</span><span class='line'><span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">app</span><span class="o">/</span><span class="n">views</span><span class="o">/</span><span class="n">layouts</span><span class="o">/</span><span class="n">application</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">slim</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;,</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="n">w</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="no">ERB</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">layout_file</span><span class="p">)</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="nb">binding</span><span class="p">))</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Remove comments and double newlines from the Gemfile:
+<code>ruby
+gsub_file("Gemfile", /#.*\n/, '')
+gsub_file("Gemfile", /^\n\n/, '')
+</code></p>
+
+<p>I oftenly use <a href="https://github.com/plataformatec/simple_form/">simple form</a>, and the question is only if I&rsquo;ll use bootstrap. 99% of times it&rsquo;s yes:
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">simple_form_installation</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="ss">simple_form</span><span class="p">:</span><span class="n">install</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;if yes?(&amp;lsquo;Use bootstrap?&amp;rsquo;)</span>
+</span><span class='line'><span class="sr">  gem &amp;lsquo;bootstrap-sass&amp;rsquo;</span>
+</span><span class='line'><span class="sr">  simple_form_installation &amp;lt;&amp;lt; &amp;ldquo; &amp;ndash;bootstrap&amp;rdquo;</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Now the fun part, adding my usual gem toolbelt. I use <a href="https://github.com/drapergem/draper">draper</a> for better separation of presentation and business logic.
+<a href="https://github.com/charliesome/better_errors">Better errors</a> &amp; <a href="https://github.com/banister/binding_of_caller">binding of caller</a> for nicer error pages (will see if I&rsquo;ll stay with it since Rails 4.2.0 will come out with it&rsquo;s own <a href="https://github.com/rails/web-console">web-console</a>).
+I love to use <a href="http://pryrepl.org/">pry</a> for easier debugging and for surfing around the codebase, so I added the <a href="https://github.com/rweng/pry-rails">pry-rails</a> gem. I also use <a href="https://github.com/flyerhzm/bullet">Bullet</a> for optimizing my SQL queries, <a href="https://github.com/amatsuda/traceroute">traceroute</a> for keeping my routes nice and tidy and the <a href="https://github.com/ryanb/letter_opener">letter opener</a> gem for easier mail previewing (I still have to try <a href="http://richonrails.com/articles/action-mailer-previews-in-ruby-on-rails-4-1">Action mailer previews</a> to see if they&rsquo;re a better fit):</p>
+
+<pre><code class="ruby">gem 'simple_form'
+gem 'slim-rails'
+gem 'draper'
+
+gem_group :development do
+  gem 'spring'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'quiet_assets'
+  gem 'pry-rails'
+  gem 'bullet'
+  gem 'traceroute'
+  gem 'letter_opener'
+end
+</code></pre>
+
+<p>Run bundle install and install simple form:
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">run</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">bundle</span> <span class="n">install</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;generate simple_form_installation</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Initialize a git repository and append usual pesky files (this can also be done through global config):
+<code>ruby
+git :init
+%w(.sass-cache powder public/system dump.rdb logfile .DS_Store).each do |gitignored|
+  append_file ".gitignore", gitignored
+end
+git add: ".", commit: "-m 'Initial commit'"
+</code></p>
+
+<p>That&rsquo;s it, as you see, I don&rsquo;t have that much of setting up to do (since the apps I do often differ from each other quite a lot) so rails application templates are just the right tool for me.</p>
+
+<p>The nice part about this is that if I don&rsquo;t need some tools included in the script, I can always copy the file locally, remove it manually and roll the script. However, since I&rsquo;ve added just the minimal amount of tools to get me started I&rsquo;ve never needed to kick something out.</p>
+
+<p>That&rsquo;s it, hope you find this useful, and if you&rsquo;ve got suggestions, do share them.</p>
+]]></content>
+  </entry>
+  
+</feed>
