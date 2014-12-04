@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Rails | Millions of Pink Lines]]></title>
+  <title><![CDATA[Category: rails | Millions of Orange Lines]]></title>
   <link href="http://damirsvrtan.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://damirsvrtan.github.io/"/>
-  <updated>2014-12-04T01:19:29+01:00</updated>
+  <updated>2014-12-04T01:24:32+01:00</updated>
   <id>http://damirsvrtan.github.io/</id>
   <author>
     <name><![CDATA[Damir Svrtan]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Automate Generating New Rails Applications]]></title>
+    <title type="html"><![CDATA[Automate generating new rails applications]]></title>
     <link href="http://damirsvrtan.github.io/blog/2014/11/26/automate-generating-new-rails-applications/"/>
     <updated>2014-11-26T19:57:04+01:00</updated>
     <id>http://damirsvrtan.github.io/blog/2014/11/26/automate-generating-new-rails-applications</id>
