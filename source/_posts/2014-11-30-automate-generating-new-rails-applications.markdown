@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Start using Rails application templates"
+title: "Automate generating new rails applications"
 date: 2014-11-26 19:57:04 +0100
 comments: true
 categories: Ruby Rails
@@ -26,13 +26,13 @@ This is probably the easist way to have an already bootstrapped application, but
 
 Besides that, I see the rails-base repo has over 800 commits, and it kinda seems too much work for a base application (even if it's been 4 years since the first commit).
 
-## A gem for generating new applications
+## Use a gem for generating new applications
 
-Probably the most popular solution for doing this is the [suspenders](https://github.com/thoughtbot/suspenders) gem by [Thoughtbot](http://thoughtbot.com/).
+One of the most popular solution for doing this is the [suspenders](https://github.com/thoughtbot/suspenders) gem by [Thoughtbot](http://thoughtbot.com/).
 
 What they basically do is generate a new rails application and hookup after the generating process to do LOTS of setting up. They add their set of gems used on the front-end, setup the database, configure deployment on Heroku, tracking for New Relic and similar.
 
-Suspenders are highly maintained and probably the best solution for agencies doing lots of Rails work. It's got a clean codebase so it's easy to fork it and do neccessary tweaking.
+Suspenders however are very opinionated and aren't prone for tweaking. If you're looking for a unopinionated suspenders alternative, checkout [RailsBricks](http://www.railsbricks.net/), or even a more flexible solution, the [rails_apps_composer](https://github.com/RailsApps/rails_apps_composer) by Daniel Kehoe.
 
 ## Use a Rails application template
 
@@ -199,8 +199,10 @@ git add: ".", commit: "-m 'Initial commit'"
 ```
 
 
-That's it, as you see, I don't have that much of setting up to do (since the apps I do often differ from each other quite a lot) so rails application templates are just the right tool for me.
+As you see, I don't have that much of setting up to do (since the apps I do often differ from each other quite a lot) so rails application templates are just the right tool for me.
 
 The nice part about this is that if I don't need some tools included in the script, I can always copy the file locally, remove it manually and roll the script. However, since I've added just the minimal amount of tools to get me started I've never needed to kick something out.
+
+If you're not so used to a set of gems and can get on having a relativly generic but very flexible template, I would suggest Daniel Kehoes template [rails-composer](https://github.com/RailsApps/rails-composer).
 
 That's it, hope you find this useful, and if you've got suggestions, do share them.
